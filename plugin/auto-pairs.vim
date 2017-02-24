@@ -114,20 +114,20 @@ let s:InsCntUndoResetCmd = "\<C-R>=AutoPairsInsCntUndoReset()\<CR>"
 
 function! <SID>AutoPairsInsCntReset()
   if g:AutoPairsUseInsertedCount
-    let b:autopairs_ins_cnt__before_reset = b:autopairs_ins_cnt
+    let b:autopairs_ins_cnt__before_reset = <SID>AutoPairsInsCnt()
     let b:autopairs_ins_cnt = 0
   endif
 endfunction
 
 function! <SID>AutoPairsInsCntInc(cnt)
   if g:AutoPairsUseInsertedCount
-    let b:autopairs_ins_cnt = b:autopairs_ins_cnt + a:cnt
+    let b:autopairs_ins_cnt = <SID>AutoPairsInsCnt() + a:cnt
   endif
 endfunction
 
 function! <SID>AutoPairsInsCntDec()
   if g:AutoPairsUseInsertedCount
-    let b:autopairs_ins_cnt = b:autopairs_ins_cnt - 1
+    let b:autopairs_ins_cnt = max([<SID>AutoPairsInsCnt() - 1, 0])
   endif
 endfunction
 
@@ -135,12 +135,21 @@ function! <SID>AutoPairsInsCntAvail()
   let ret = 1
 
   if g:AutoPairsUseInsertedCount
-    let ret = (b:autopairs_ins_cnt > 0)
+    let ret = (<SID>AutoPairsInsCnt() > 0)
   endif
 
   return ret
 endfunction
 
+function! <SID>AutoPairsInsCnt()
+    let ret = 0
+
+    if exists('b:autopairs_ins_cnt')
+        ret = b:autopairs_ins_cnt
+    endif
+
+    return ret
+endfunction
 
 function! AutoPairsInsCntUndoReset()
   if g:AutoPairsUseInsertedCount
